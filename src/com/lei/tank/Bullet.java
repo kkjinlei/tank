@@ -4,17 +4,20 @@ import java.awt.*;
 
 public class Bullet {
     private int x,y;
-    private int height=10,width=10;
-    private int speed = 10;
+    public static int HEIGHT =ResourceMgr.bulletU.getHeight();
+    public static int WIDTH =ResourceMgr.bulletU.getWidth();
+    private int speed = 20;
     private Boolean isMoving = true;
     private Boolean isLiving = true;
     private Dir dir;
+    private TankFrame tf = null;
 
-    public Bullet(int x, int y, Dir dir) {
+    public Bullet(int x, int y, Dir dir,TankFrame tf) {
         super();
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.tf = tf;
     }
 
     public int getX() {
@@ -34,19 +37,19 @@ public class Bullet {
     }
 
     public int getHeight() {
-        return height;
+        return HEIGHT;
     }
 
     public void setHeight(int height) {
-        this.height = height;
+        this.HEIGHT = height;
     }
 
     public int getWidth() {
-        return width;
+        return WIDTH;
     }
 
     public void setWidth(int width) {
-        this.width = width;
+        this.WIDTH = width;
     }
 
     public int getSpeed() {
@@ -81,30 +84,44 @@ public class Bullet {
         this.dir = dir;
     }
 
-    private void move(){
-        if(!isMoving || !isLiving) return;
-        switch (dir){
+    private void move() {
+        switch (dir) {
             case UP:
-                y-=this.getSpeed();
+                y -= this.getSpeed();
                 break;
             case DOWN:
-                y+=this.getSpeed();
+                y += this.getSpeed();
                 break;
             case LEFT:
-                x-=this.getSpeed();
+                x -= this.getSpeed();
                 break;
             case RIGHT:
-                x+=this.getSpeed();
+                x += this.getSpeed();
                 break;
             default:
                 break;
         }
+        if (x > tf.getWidth() || y > tf.getHeight() || x < 0 || y < 0) this.isLiving = false ;
     }
-
-
     public void paint(Graphics g){
+        if (!isLiving) {
+            tf.bullets.remove(this);
+        }
+        switch(dir){
+            case UP:
+                g.drawImage(ResourceMgr.bulletU,x,y,null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.bulletD,x,y,null);
+                break;
+            case LEFT:
+                g.drawImage(ResourceMgr.bulletL,x,y,null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.bulletR,x,y,null);
+                break;
 
-        g.fillRect(x,y,width,height);
+        }
         move();
     }
 }

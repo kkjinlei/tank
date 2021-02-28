@@ -10,8 +10,9 @@ import java.util.List;
 
 public class TankFrame extends Frame {
     static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
-    Tank myTank = new Tank(200,200,Dir.DOWN,this);
+    Tank myTank = new Tank(200,600,Dir.DOWN,this,Group.GOOD);
     List<Bullet> bullets = new ArrayList<>();
+    List<Tank> tanks = new ArrayList<>();
 
     public TankFrame(){
         setVisible(true);
@@ -30,16 +31,34 @@ public class TankFrame extends Frame {
         addKeyListener(new MyListener());
     }
 
+    Image offScreenImage = null;
+    @Override
+    public void update(Graphics g) {
+        if(offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
     @Override
     public void paint(Graphics g){
-        //System.out.println(1);
         Color c = g.getColor();
-        g.drawString("bullets:" + bullets.size(), 10, 60);
         g.setColor(Color.WHITE);
+        g.drawString("bullets:" + bullets.size(), 10, 60);
+        g.drawString("tanks:" + tanks.size(), 10, 80);
         g.setColor(c);
         myTank.paint(g);
-        for(Bullet b: bullets){
-            b.paint(g);
+        for(int i=0;i<bullets.size();i++){
+            bullets.get(i).paint(g);
+        }
+        for(int i=0;i<tanks.size();i++){
+            tanks.get(i).paint(g);
         }
     }
 

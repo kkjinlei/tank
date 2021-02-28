@@ -4,20 +4,22 @@ import java.awt.*;
 
 public class Tank {
     private int x,y;
-    private int height=50,width=50;
+    public static int HEIGHT =ResourceMgr.tankU.getHeight();
+    public static int WIDTH =ResourceMgr.tankU.getWidth();
     private Dir dir;
     private Boolean isMoving = false;
-    private int speed = 10;
-
+    private int speed = 5;
     private TankFrame tf =null;
+    private Group group = null;
 
 
-    public Tank(int x, int y, Dir dir,TankFrame tf) {
+    public Tank(int x, int y, Dir dir,TankFrame tf,Group group) {
         super();
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.tf = tf;
+        this.group = group;
     }
 
     public int getX() {
@@ -37,19 +39,19 @@ public class Tank {
     }
 
     public int getHeight() {
-        return height;
+        return HEIGHT;
     }
 
     public void setHeight(int height) {
-        this.height = height;
+        this.HEIGHT = height;
     }
 
     public int getWidth() {
-        return width;
+        return WIDTH;
     }
 
     public void setWidth(int width) {
-        this.width = width;
+        this.WIDTH = width;
     }
 
     public Boolean getMoving() {
@@ -98,13 +100,31 @@ public class Tank {
     }
 
     public void paint(Graphics g){
+        switch(dir){
+            case UP:
+                g.drawImage(ResourceMgr.tankU,x,y,null);
+                break;
+            case DOWN:
+                g.drawImage(ResourceMgr.tankD,x,y,null);
+                break;
+            case LEFT:
+                g.drawImage(ResourceMgr.tankL,x,y,null);
+                break;
+            case RIGHT:
+                g.drawImage(ResourceMgr.tankR,x,y,null);
+                break;
 
-        g.fillRect(x,y,width,height);
+        }
         move();
     }
 
     public void fire() {
-        Bullet bullet = new Bullet(x,y,this.dir);
+        int bx = x+Tank.WIDTH /2-Bullet.WIDTH /2;
+        int by = y+Tank.HEIGHT /2;
+        Bullet bullet = new Bullet(bx,by,this.dir,tf);
+        bullet.setX(x+ WIDTH /2-bullet.getWidth()/2);
+        bullet.setY(y+ HEIGHT /2-bullet.getHeight()/2);
         tf.add(bullet);
     }
 }
+
