@@ -13,6 +13,7 @@ public class TankFrame extends Frame {
     Tank myTank = new Tank(200,600,Dir.DOWN,this,Group.GOOD);
     List<Bullet> bullets = new ArrayList<>();
     List<Tank> tanks = new ArrayList<>();
+    List<Explode> explodes = new ArrayList<>();
 
     public TankFrame(){
         setVisible(true);
@@ -60,6 +61,14 @@ public class TankFrame extends Frame {
         for(int i=0;i<tanks.size();i++){
             tanks.get(i).paint(g);
         }
+        for(int i=0;i<explodes.size();i++){
+            explodes.get(i).paint(g);
+        }
+
+        for(int i=0; i<bullets.size(); i++) {
+            for(int j = 0; j<tanks.size(); j++)
+                bullets.get(i).collideWith(tanks.get(j));
+        }
     }
 
     public void add(Bullet bullet) {
@@ -91,9 +100,6 @@ public class TankFrame extends Frame {
                     bR = true;
                     setMainTankDir();
                     break;
-                case KeyEvent.VK_CONTROL:
-                    myTank.fire();
-                    break;
                 default:
                     break;
             }
@@ -103,11 +109,11 @@ public class TankFrame extends Frame {
             if(!bU && !bD && !bL && !bR){
                 myTank.setMoving(false);
             }else{
-                myTank.setMoving(true);
                 if(bU) myTank.setDir(Dir.UP);
                 if(bD) myTank.setDir(Dir.DOWN);
                 if(bL) myTank.setDir(Dir.LEFT);
                 if(bR) myTank.setDir(Dir.RIGHT);
+                myTank.setMoving(true);
             }
 
         }
@@ -131,6 +137,9 @@ public class TankFrame extends Frame {
                 case KeyEvent.VK_RIGHT:
                     bR = false;
                     setMainTankDir();
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    myTank.fire();
                     break;
                 default:
                     break;

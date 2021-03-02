@@ -11,13 +11,20 @@ public class Bullet {
     private Boolean isLiving = true;
     private Dir dir;
     private TankFrame tf = null;
+    private Group group = null;
+    private Rectangle rectangle = new Rectangle();
 
-    public Bullet(int x, int y, Dir dir,TankFrame tf) {
+    public Bullet(int x, int y, Dir dir,TankFrame tf,Group group) {
         super();
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.tf = tf;
+        this.group = group;
+        rectangle.x = x;
+        rectangle.y = y;
+        rectangle.height = this.getHeight();
+        rectangle.width = this.getWidth();
     }
 
     public int getX() {
@@ -101,6 +108,8 @@ public class Bullet {
             default:
                 break;
         }
+        rectangle.x = this.x;
+        rectangle.y = this.y;
         if (x > tf.getWidth() || y > tf.getHeight() || x < 0 || y < 0) this.isLiving = false ;
     }
     public void paint(Graphics g){
@@ -123,5 +132,13 @@ public class Bullet {
 
         }
         move();
+    }
+
+    public void collideWith(Tank tank) {
+        if(this.rectangle.intersects(tank.getRectangle()) && this.group!=tank.getGroup()){
+            tf.explodes.add(new Explode(tank.getX()+tank.getWidth()/2,tank.getY()+tank.getHeight()/2,tf));
+            this.isLiving = false;
+            tank.setLiving(false);
+        }
     }
 }
